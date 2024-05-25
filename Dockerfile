@@ -36,5 +36,12 @@ FROM base as gocd-agent-ngspice
 
 COPY --from=ngspice   ${TOOLS}/   ${TOOLS}/
 
-RUN --mount=type=bind,source=images/gocd-agent-ngspice,target=/images/gocd-agent-ngspice \
-    bash /images/gocd-agent-ngspice/env.sh
+ARG NGSPICE_REPO_URL="https://github.com/danchitnis/ngspice-sf-mirror"
+ARG NGSPICE_REPO_COMMIT="ngspice-42"
+ARG NGSPICE_NAME="ngspice"
+
+# RUN --mount=type=bind,source=images/gocd-agent-ngspice,target=/images/gocd-agent-ngspice \
+#     bash /images/gocd-agent-ngspice/env.sh
+
+ENV PATH=${PATH}:${TOOLS}/${NGSPICE_NAME}/${NGSPICE_REPO_COMMIT}/bin \
+    LD_LIBRARY_PATH=${TOOLS}/${NGSPICE_NAME}/${NGSPICE_REPO_COMMIT}/lib

@@ -57,5 +57,12 @@ build-ngspice-lib:
 test-ngspice:
 	cd $(NGSPICE_RELEASE_DIR) && make check
 
+
 build-agent:
 	docker build . -t akilesalreadytaken/gocd-agent-ngspice:latest
+
+
+start-agent:
+	docker run -it --rm akilesalreadytaken/gocd-agent-ngspice:latest bash
+
+start-updated-agent: build-agent start-agent
