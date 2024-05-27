@@ -25,6 +25,8 @@ NGSPICE_MAKEFILE=$(NGSPICE_DIR)/Makefile
 
 NGSPICE_PREFIX="opt/ngspice/"
 
+AGENT_IMAGE_NAME=akilesalreadytaken/gocd-agent-ngspice:latest
+
 clone-ngspice:
 	git clone $(NGSPICE_REPO) || true
 	cd $(NGSPICE_DIR) && git pull
@@ -59,14 +61,20 @@ test-ngspice:
 
 
 build-agent:
-	docker build . -t akilesalreadytaken/gocd-agent-ngspice:latest
+ifeq (,$(DOCKER_TARGET))
+	docker build . -t $(AGENT_IMAGE_NAME)
+else
+	docker build --target $(DOCKER_TARGET) . -t $(AGENT_IMAGE_NAME)
+endif
 
-
-AGENT_RUN_CMD=docker run -it --rm --mount type=bind,source=$(realpath ./test),target=/home/go/test akilesalreadytaken/gocd-agent-ngspice:latest 
+AGENT_RUN_CMD=docker run -it --rm --mount type=bind,source=$(realpath ./test),target=/home/go/test
 start-agent:
-	$(AGENT_RUN_CMD) bash
+	$(AGENT_RUN_CMD) $(AGENT_IMAGE_NAME) bash
+
+start-agent-root:
+	$(AGENT_RUN_CMD) --user root $(AGENT_IMAGE_NAME) bash
 
 start-updated-agent: build-agent start-agent
 
 test-agent:
-	$(AGENT_RUN_CMD) bash -c "cd $$HOME/test && make test"
+	$(AGENT_RUN_CMD) $(AGENT_IMAGE_NAME) bash -c "cd $$HOME/test && make test"

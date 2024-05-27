@@ -101,7 +101,8 @@ apt -y install \
 	wget \
 	zip \
 	zlib1g-dev \
-	python3-numpy
+	python3-numpy \
+	python3-pip
 
 echo "[INFO] Cleaning up caches"
 rm -rf /tmp/*
