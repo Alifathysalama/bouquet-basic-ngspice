@@ -1,3 +1,7 @@
+ARG NGSPICE_REPO_URL="https://github.com/danchitnis/ngspice-sf-mirror" \
+    NGSPICE_REPO_COMMIT="ngspice-42" \
+    NGSPICE_NAME="ngspice"
+
 #######################################################################
 # Setup base image
 #######################################################################
@@ -20,11 +24,10 @@ RUN --mount=type=bind,source=images/base,target=/images/base \
 # Compile ngspice
 #######################################################################
 FROM base as ngspice
-ARG NGSPICE_REPO_URL="https://github.com/danchitnis/ngspice-sf-mirror"
-ARG NGSPICE_REPO_COMMIT="ngspice-42"
-ARG NGSPICE_NAME="ngspice"
 
-USER root
+ARG NGSPICE_REPO_URL \
+    NGSPICE_REPO_COMMIT \
+    NGSPICE_NAME
 
 RUN --mount=type=bind,source=images/ngspice,target=/images/ngspice \
     bash /images/ngspice/install.sh
@@ -34,14 +37,13 @@ RUN --mount=type=bind,source=images/ngspice,target=/images/ngspice \
 #######################################################################
 FROM base as gocd-agent-ngspice
 
+ARG NGSPICE_REPO_URL \
+    NGSPICE_REPO_COMMIT \
+    NGSPICE_NAME
+
 COPY --from=ngspice   ${TOOLS}/   ${TOOLS}/
-
-ARG NGSPICE_REPO_URL="https://github.com/danchitnis/ngspice-sf-mirror"
-ARG NGSPICE_REPO_COMMIT="ngspice-42"
-ARG NGSPICE_NAME="ngspice"
-
-# RUN --mount=type=bind,source=images/gocd-agent-ngspice,target=/images/gocd-agent-ngspice \
-#     bash /images/gocd-agent-ngspice/env.sh
 
 ENV PATH=${PATH}:${TOOLS}/${NGSPICE_NAME}/${NGSPICE_REPO_COMMIT}/bin \
     LD_LIBRARY_PATH=${TOOLS}/${NGSPICE_NAME}/${NGSPICE_REPO_COMMIT}/lib
+
+USER go

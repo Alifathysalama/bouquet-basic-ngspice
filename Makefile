@@ -62,7 +62,11 @@ build-agent:
 	docker build . -t akilesalreadytaken/gocd-agent-ngspice:latest
 
 
+AGENT_RUN_CMD=docker run -it --rm --mount type=bind,source=$(realpath ./test),target=/home/go/test akilesalreadytaken/gocd-agent-ngspice:latest 
 start-agent:
-	docker run -it --rm akilesalreadytaken/gocd-agent-ngspice:latest bash
+	$(AGENT_RUN_CMD) bash
 
 start-updated-agent: build-agent start-agent
+
+test-agent:
+	$(AGENT_RUN_CMD) bash -c "cd $$HOME/test && make test"
