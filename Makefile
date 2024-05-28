@@ -26,7 +26,11 @@ NGSPICE_REPO=git://git.code.sf.net/p/ngspice/ngspice
 
 NGSPICE_MAKEFILE=$(NGSPICE_DIR)/Makefile
 
+ifeq (Windows_NT,$(OS))
 DOCKER_SOCKET=//var/run/docker.sock
+else
+DOCKER_SOCKET=/var/run/docker.sock
+endif
 
 DOCKER_RUN_AGENT=docker run -it --rm --mount type=bind,source=$(realpath ./test),target=/home/go/test
 DOCKER_RUN_DIND=$(DOCKER_RUN_AGENT) --privileged -v $(DOCKER_SOCKET):/var/run/docker.sock
