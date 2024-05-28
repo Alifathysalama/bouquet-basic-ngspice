@@ -2,6 +2,9 @@
 all:
 	@echo Nothing selected
 
+TIMESTAMP_DAY=$(shell date +%Y_%m_%d)
+TIMESTAMP_TIME=$(shell date +%H_%M_%S)
+
 NPROC=$(shell nproc)
 
 NGSPICE_FLAGS= \
@@ -62,6 +65,10 @@ build-ngspice-lib:
 test-ngspice:
 	cd $(NGSPICE_RELEASE_DIR) && make check
 
+########################
+# Ngspice Agent Commands
+########################
+
 
 build-agent:
 ifeq (,$(DOCKER_TARGET))
@@ -71,12 +78,9 @@ else
 endif
 
 
-build-dind:
-ifeq (,$(DOCKER_TARGET))
-	docker build -f Dockerfile.dind . -t $(DOCKER_IMAGE_DIND)
-else
-	docker build -f Dockerfile.dind --target $(DOCKER_TARGET) . -t $(DOCKER_IMAGE_DIND)
-endif
+build-agent-gocd:
+	docker build -f Dockerfile . -t $(TIMESTAMP_DAY)_$(TIMESTAMP_TIME) -t latest
+
 
 start-agent:
 	$(DOCKER_RUN_AGENT) $(DOCKER_IMAGE_AGENT) bash
@@ -94,8 +98,17 @@ test-agent:
 
 
 ########################
-# DIND COMMANDS
+# Docker in Docker Agent
 ########################
+
+
+build-dind:
+ifeq (,$(DOCKER_TARGET))
+	docker build -f Dockerfile.dind . -t $(DOCKER_IMAGE_DIND)
+else
+	docker build -f Dockerfile.dind --target $(DOCKER_TARGET) . -t $(DOCKER_IMAGE_DIND)
+endif
+
 
 start-dind:
 	$(DOCKER_RUN_DIND) $(DOCKER_IMAGE_DIND) bash
