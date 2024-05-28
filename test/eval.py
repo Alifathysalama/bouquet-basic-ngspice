@@ -4,6 +4,8 @@
 from __future__ import division
 import numpy as np
 from numpy import ndarray
+from pathlib import Path
+from pprint import pprint
 
 from math import isclose
 
@@ -23,7 +25,7 @@ MDATA_LIST = [
 ]
 
 
-def rawread(fname: str):
+def rawread(fname: str) -> tuple[list[ndarray], list]:
     """Read ngspice binary raw files. Return tuple of the data, and the
     plot metadata. The dtype of the data contains field names. This is
     not very robust yet, and only supports ngspice.
@@ -92,38 +94,42 @@ def find_vector(arr: list[ndarray], label: str) -> ndarray:
             return vector
 
 
-def compare(arr: list[ndarray], label: str, value: float | int):
-    vector = find_vector(arr, label)
-    if isclose(vector[label], value):
-        return True
-
-
 import sys
 
 
-if __name__ == "__main__":
-    if len(sys.argv) != 2:
-        print("Not enought arguments")
+if len(sys.argv) != 2:
+    print("Not enought arguments")
 
-    print(f"Processing {sys.argv[-1]}")
-    arrs, plots = rawread(f"{sys.argv[-1]}.raw")
+test_file = Path(sys.argv[-1])
 
-    test_name = sys.argv[-1]
+print(f"Testing file: {test_file}")
+arrs, plots = rawread(f"{test_file.with_suffix(".raw")}")
 
-    match test_name:
-        case "basic":
-            vector = find_vector(arrs, "v(out)")
-            result = isclose(vector[0][0], 2 / 3)
+result = False
+match test_file.stem:
+    case "basic":
+        vector = find_vector(arrs, "v(out)")
+        result = isclose(vector[0][0], 2 / 3)
 
-        case _:
-            raise RuntimeError("No valid test specified")
+    case "testbench_dac_16nfet":
+        print("IS WORKING HASTA AQUI")
 
-    if not result:
-        raise RuntimeError(f"Test {test_name} failed")
-    else:
-        print(f"Test {test_name} ok")
+        for data in arrs:
+            time = find_vector(arrs, "time")
+            # print(time)
+            out = find_vector(arrs, "v(out)")
+            # print(out)
+            out_parax = find_vector(arrs, "v(out_parax)")
+            print(out_parax)
 
+            # print(out)
+            # print(out_parax)
+            break
 
-# Local Variables:
-# mode: python
-# End:
+    case _:
+        raise RuntimeError("No valid test specified")
+
+if not result:
+    raise RuntimeError(f"Test {test_file} failed")
+else:
+    print(f"Test {test_file} ok")

@@ -1,18 +1,32 @@
 TOP?=basic.cir
 
-CIR_FILE=$(realpath $(TOP))
-CIR_NAME=$(basename $(notdir $(CIR_FILE)))
+BASE_NAME=$(basename $(TOP))
+SPICE_FILE=$(realpath $(TOP))
+SPICE_NAME=$(basename $(notdir $(SPICE_FILE)))
 
-RAW_FILE=$(CIR_NAME).raw
+RAW_FILE=$(SPICE_NAME).raw
 
-all:
-	print $(CIR_NAME)
-	#cat $(TOP)
+all: print
+
+print:
+	@echo BASE_NAME:  $(BASE_NAME)
+	@echo SPICE_FILE:   $(SPICE_FILE)
+	@echo SPICE_NAME:   $(SPICE_NAME)
+	@echo RAW_FILE:   $(RAW_FILE)
 
 
-test:
-	python3 eval.py $(CIR_NAME)
+test-env-py:
+	python3 eval.py $(BASE_NAME)
 
 
 sim:
-	SPICE_USERINIT_DIR=. ngspice -b -o $(CIR_NAME).log -r $(RAW_FILE) -a $(CIR_NAME).cir
+	SPICE_USERINIT_DIR=. ngspice -b -o $(SPICE_NAME).log -r $(RAW_FILE) -a $(SPICE_NAME).cir
+
+
+test-all:
+	make TOP=basic.cir test-env-py
+	make TOP=tt07-analog-dac-ay8913/xschem/simulation/testbench_dac_16nfet.spice test-env-py
+
+
+sim-all:
+	make TOP=basic.cir sim
