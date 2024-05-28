@@ -1,0 +1,9 @@
+ARG BASE_IMAGE=gocd/gocd-agent-docker-dind:v24.1.0
+
+FROM ${BASE_IMAGE} as base
+
+USER root
+
+RUN apk add --no-cache make
+
+USER go

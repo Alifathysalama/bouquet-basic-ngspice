@@ -1,3 +1,4 @@
+
 all:
 	@echo Nothing selected
 
@@ -22,10 +23,12 @@ NGSPICE_REPO=git://git.code.sf.net/p/ngspice/ngspice
 
 NGSPICE_MAKEFILE=$(NGSPICE_DIR)/Makefile
 
+DOCKER_SOCKET=//var/run/docker.sock
 
-NGSPICE_PREFIX="opt/ngspice/"
-
-AGENT_IMAGE_NAME=akilesalreadytaken/gocd-agent-ngspice:latest
+DOCKER_RUN_AGENT=docker run -it --rm --mount type=bind,source=$(realpath ./test),target=/home/go/test
+DOCKER_RUN_DIND=$(DOCKER_RUN_AGENT) --privileged -v $(DOCKER_SOCKET):/var/run/docker.sock
+DOCKER_IMAGE_AGENT=akilesalreadytaken/gocd-agent-ngspice:latest
+DOCKER_IMAGE_DIND=akilesalreadytaken/gocd-agent-dind:latest
 
 clone-ngspice:
 	git clone $(NGSPICE_REPO) || true
@@ -62,19 +65,41 @@ test-ngspice:
 
 build-agent:
 ifeq (,$(DOCKER_TARGET))
-	docker build . -t $(AGENT_IMAGE_NAME)
+	docker build . -t $(DOCKER_IMAGE_AGENT)
 else
-	docker build --target $(DOCKER_TARGET) . -t $(AGENT_IMAGE_NAME)
+	docker build --target $(DOCKER_TARGET) . -t $(DOCKER_IMAGE_AGENT)
 endif
 
-AGENT_RUN_CMD=docker run -it --rm --mount type=bind,source=$(realpath ./test),target=/home/go/test
+
+build-dind:
+ifeq (,$(DOCKER_TARGET))
+	docker build -f Dockerfile.dind . -t $(DOCKER_IMAGE_DIND)
+else
+	docker build -f Dockerfile.dind --target $(DOCKER_TARGET) . -t $(DOCKER_IMAGE_DIND)
+endif
+
 start-agent:
-	$(AGENT_RUN_CMD) $(AGENT_IMAGE_NAME) bash
+	$(DOCKER_RUN_AGENT) $(DOCKER_IMAGE_AGENT) bash
+
 
 start-agent-root:
-	$(AGENT_RUN_CMD) --user root $(AGENT_IMAGE_NAME) bash
+	$(DOCKER_RUN_AGENT) --user root $(DOCKER_IMAGE_AGENT) bash
+
 
 start-updated-agent: build-agent start-agent
 
+
 test-agent:
-	$(AGENT_RUN_CMD) $(AGENT_IMAGE_NAME) bash -c "cd $$HOME/test && make test"
+	$(DOCKER_RUN_AGENT) $(DOCKER_IMAGE_AGENT) bash -c "cd $$HOME/test && make test"
+
+
+########################
+# DIND COMMANDS
+########################
+
+start-dind:
+	$(DOCKER_RUN_DIND) $(DOCKER_IMAGE_DIND) bash
+
+
+start-dind-root:
+	$(DOCKER_RUN_DIND) --user root $(DOCKER_IMAGE_DIND) bash
