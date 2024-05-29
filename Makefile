@@ -87,7 +87,7 @@ build-agent-gocd:
 
 
 start-agent:
-	$(DOCKER_RUN_AGENT) $(DOCKER_IMAGE_AGENT) bash
+	$(DOCKER_RUN_AGENT) $(DOCKER_IMAGE_AGENT) bash -c "cd /home/go/; bash"
 
 
 start-agent-root:
