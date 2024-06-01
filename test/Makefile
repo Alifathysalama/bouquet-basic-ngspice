@@ -1,16 +1,21 @@
 TOP?=basic.spice
 SPICE_FILE=$(realpath $(TOP))
+SPICE_DIR=$(dir $(SPICE_FILE))
 BASE_NAME=$(basename $(TOP))
 
 SPICE_NAME=$(basename $(notdir $(SPICE_FILE)))
 
 RAW_FILE=$(SPICE_NAME).raw
 
+
+PDK_ROOT=/opt/pdks
+
 all: print
 
 print:
 	@echo TOP: ............... $(TOP)
 	@echo SPICE_FILE: ........ $(SPICE_FILE)
+	@echo SPICE_DIR: ......... $(SPICE_DIR)
 	@echo BASE_NAME: ......... $(BASE_NAME)
 	@echo SPICE_NAME: ........ $(SPICE_NAME)
 	@echo RAW_FILE: .......... $(RAW_FILE)
@@ -21,11 +26,7 @@ test-env-py:
 
 
 sim:
-	SPICE_USERINIT_DIR=. ngspice -b -o $(SPICE_NAME).log -r $(RAW_FILE) -a $(SPICE_FILE)
-
-
-assert:
-	grep "$(PATTERN)" $(FILE)
+	SPICE_USERINIT_DIR=$(SPICE_DIR) ngspice -b -o $(SPICE_NAME).log -r $(RAW_FILE) -a $(SPICE_FILE)
 
 
 test-basic:
@@ -33,13 +34,11 @@ test-basic:
 	make TOP=basic/basic.spice test-env-py
 
 test-sky130:
-	PDK=sky130A PDK_ROOT=/opt/pdks make TOP=sky130/oscillator.spice sim
-	make FILE=oscillator.log PATTERN="freq = 1.381854e+08" assert
+	PDK=sky130A make TOP=sky130/oscillator.spice sim
+	grep "freq = 1.381854e+08" oscillator.log
 
 test-ihp:
-	PDK=sg13g2 PDK_ROOT=/opt/pdks make TOP=ihp/test.spice sim
-	exit 0
+	PDK=sg13g2  make TOP=ihp/psrr_1.spice sim
+	grep "psrr                =  -6.152994e+0" psrr_1.log
 
-test-all:
 	
-	make TOP=tt07-analog-dac-ay8913/xschem/simulation/testbench_dac_16nfet.spice test-env-py

@@ -104,6 +104,15 @@ apt -y install \
 	python3-numpy \
 	python3-pip
 
+
+
+update-alternatives --install /usr/bin/python python /usr/bin/python3 0	
+
+# cd /usr/lib/llvm-15/bin
+# for f in *; do rm -f /usr/bin/"$f"; \
+#     ln -s ../lib/llvm-15/bin/"$f" /usr/bin/"$f"
+# done
+
 echo "[INFO] Cleaning up caches"
 rm -rf /tmp/*
 apt -y autoremove --purge

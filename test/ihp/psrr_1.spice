@@ -1,0 +1,35 @@
+** sch_path: TOP_ldo_cl_psrr.sch
+**.subckt TOP_ldo_cl_psrr
+V1 vcm_ldo1 vss 0.9
+V5 vss GND 0
+I0 vss iref_ldo1 5u
+Cc net1 vss 10u m=1
+Resr vout_ldo1 net1 2 m=1
+Resr1 vout_ldo1 vss 12 m=1
+Cc1 vout_ldo1 vss 50p m=1
+Vs vdd_ldo1 vss 1.8 AC 1
+x1 net2 net3 net4 net5 net6 net7 net8 vout_ldo1 net9 vdd_ldo1 net10 vcm_ldo1 net11 net12 iref_ldo1 net13 net14 net15 net16 net17  net18 vss net19 net20 net21 net22 net23 net24 TOP
+**** begin user architecture code
+
+.include ./TOP.spice
+
+.lib /opt/pdks/sg13g2/libs.tech/ngspice/models/cornerMOSlv.lib mos_tt
+.lib /opt/pdks/sg13g2/libs.tech/ngspice/models/cornerRES.lib res_typ
+.lib /opt/pdks/sg13g2/libs.tech/ngspice/models/cornerCAP.lib cap_typ
+
+.option TEMP=27
+.option warn=1
+
+.control
+
+pre_osdi /opt/pdks/sg13g2/libs.tech/ngspice/openvaf/psp103_nqs.osdi
+
+** PSRR is defined as the change in input offset vs. change in power supply.
+ac dec 100 1 10G
+meas ac psrr find vdb(vout_ldo1) at=1
+
+wrdata ngspice/psrr_1.data psrr
+.endc
+
+.GLOBAL GND
+.end
