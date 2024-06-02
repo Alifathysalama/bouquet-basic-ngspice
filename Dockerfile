@@ -54,8 +54,8 @@ RUN --mount=type=bind,source=images/base,target=/images/base \
 #######################################################################
 FROM common as builder
 
-RUN --mount=type=bind,source=images/base,target=/images/base \
-    bash /images/base/exhaustive-install.sh
+RUN --mount=type=bind,source=images/builder,target=/images/builder \
+    bash /images/builder/exhaustive-install.sh
 
 
 #######################################################################
