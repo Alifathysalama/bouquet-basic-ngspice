@@ -26,7 +26,7 @@ NGSPICE_REPO=git://git.code.sf.net/p/ngspice/ngspice
 
 NGSPICE_MAKEFILE=$(NGSPICE_DIR)/Makefile
 
-ifneq (,DOCKER_ROOT)
+ifneq (,$(DOCKER_ROOT))
 DOCKER_ROOT_USER=--user root
 endif
 

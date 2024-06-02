@@ -40,6 +40,20 @@ git checkout "${NGSPICE_REPO_COMMIT}"
 
 make -j"$(nproc)"
 make install
+ln -s "${TOOLS}/${NGSPICE_NAME}/${NGSPICE_REPO_COMMIT}/bin/ngspice" /usr/bin/ngspice
+
+# Regression tests
+make -C tests/regression check
+
+# Paranoia Tests requires more automation in parsing responses and ignore
+# "expected" leak errors on ngspice.
+# apt update && apt install -y p7zip valgrind parallel
+# wget https://ngspice.sourceforge.io/tests/paranoia_parallel.7z
+# 7za x paranoia_parallel.7z
+# cd paranoia_parallel
+
+# ./paranoia_table_generators.sh
+# ./runtests.sh paranoia_test_extra.sh ./working
 
 make distclean
 
