@@ -42,3 +42,7 @@ test-ihp:
 	grep "psrr                =  -6.152994e+0" psrr_1.log
 
 	
+
+list_files:
+	@echo "Content of SPICE_DIR ($(SPICE_DIR)):"
+	@ls -l $(SPICE_DIR)
