@@ -1,0 +1,47 @@
+* Differential Amplifier
+* V_DD = 2.0V, V_bp = 0.9V, C_out = 2pF, R_D = 2.5k ohm, M_0 current source of 0.5mA
+
+* Power Supply
+VDD VDD 0 DC 2.0
+
+* Bias Voltage
+Vb Vb 0 DC 0.9
+
+* Differential Input Voltages
+Vin1 Vin1 0 DC 0
+Vin2 Vin2 0 DC 0
+
+* Current Source
+M0 0 Vb 0 0 sky130_fd_pr__nfet_01v8 W=10u L=1u
+
+* Differential Pair
+M1 out1 Vin1 0 0 sky130_fd_pr__nfet_01v8 W=10u L=1u
+M2 out2 Vin2 0 0 sky130_fd_pr__nfet_01v8 W=10u L=1u
+
+* Load Resistors
+RD1 VDD out1 2.5k
+RD2 VDD out2 2.5k
+
+* Output Capacitance
+Cout out1 out2 2p
+
+* .model Definition for NMOS
+.model sky130_fd_pr__nfet_01v8 nmos (Level=1)
+
+* Analysis
+.control
+    * Initial condition
+    .ic V(Vin1)=0
+
+    * DC operating point analysis
+    op
+
+    * Transient analysis
+    tran 0.1n 10u
+
+    * Sweep input voltage and plot drain currents
+    sweep Vin1 -200m 200m 1m
+    plot I(M1) I(M2)
+.endc
+
+.end
