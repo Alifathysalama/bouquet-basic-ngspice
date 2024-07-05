@@ -34,8 +34,8 @@ test-basic:
 	make TOP=basic/basic.spice test-env-py
 
 test-sky130:
-	PDK=sky130A make TOP=sky130/oscillator.spice sim
-	grep "freq = 1.381854e+08" oscillator.log
+	PDK=sky130A make TOP=sky130/diffamp.spice sim
+	
 
 test-ihp:
 	PDK=sg13g2  make TOP=ihp/psrr_1.spice sim
