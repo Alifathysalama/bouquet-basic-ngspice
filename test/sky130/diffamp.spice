@@ -1,0 +1,58 @@
+** Project: Differential Amplifier
+
+.option TEMP=75
+* Flag unsafe operating conditions (exceeds models' specified limits)
+.option warn=1
+
+**.subckt differential_amplifier
+vvss vss GND DC 0
+vvdd vdd GND DC 1.2
+
+* Define the transistors
+M1 N1 vin1 vdd vss sky130_fd_pr__nfet_01v8 L=0.5u W={W_M1}
+M2 N2 vin2 vdd vss sky130_fd_pr__nfet_01v8 L=0.5u W={W_M2}
+M0 vss N1 vss vss sky130_fd_pr__nfet_01v8 L=0.5u W={W_M0}
+
+* Load resistors
+R1 out1 vdd {R_D}
+R2 out2 vdd {R_D}
+
+* Load capacitance
+C1 out1 vss 2p
+C2 out2 vss 2p
+
+* Differential input
+vin1 vin1 0 SIN(0 5m 1MEG)
+vin2 vin2 0 SIN(0 5m 1MEG 180)
+
+.ic v(N1)=0 v(N2)=0
+
+.control
+tran 0.1n 20u
+meas tran gain_max max v(out1,out2)
+.endc
+
+.lib /opt/pdks/sky130A/libs.tech/combined/sky130.lib.spice tt
+.include /opt/pdks/sky130A/libs.ref/sky130_fd_sc_hd/spice/sky130_fd_sc_hd.spice
+**.ends
+
+* Component values from hand analysis
+.param W_M1=5u
+.param W_M2=5u
+.param W_M0=10u
+.param R_D=2k
+
+* Differential amplifier subcircuit
+.subckt diffamp vin1 vin2 out1 out2 vdd vss
+M1 out1 vin1 vdd vss sky130_fd_pr__nfet_01v8 L=0.5u W={W_M1}
+M2 out2 vin2 vdd vss sky130_fd_pr__nfet_01v8 L=0.5u W={W_M2}
+M0 vss out1 out2 vss sky130_fd_pr__nfet_01v8 L=0.5u W={W_M0}
+R1 out1 vdd {R_D}
+R2 out2 vdd {R_D}
+.ends diffamp
+
+* Simulation commands
+x1 vin1 vin2 out1 out2 vdd vss diffamp
+
+.end
+
