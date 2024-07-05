@@ -43,8 +43,8 @@ Cout out1 out2 2p
     sweep Vin1 -200m 200m 1m
     plot I(M1) I(M2)
 
-    * Save .raw file
-    wrdata d.raw all
+   save all
+   write $(RAW_FILE)
 .endc
 
 .lib /opt/pdks/sky130A/libs.tech/combined/sky130.lib.spice tt
