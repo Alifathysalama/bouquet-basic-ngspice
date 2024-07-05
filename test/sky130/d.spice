@@ -1,26 +1,26 @@
 * Differential Amplifier
-* V_DD = 2.0V, V_bp = 0.9V, C_out = 2pF, R_D = 2.5k ohm, M_0 current source of 0.5mA
+* V_DD = 1.2V, V_b = 0.5V, C_out = 2pF, R_D = 1989.43 ohm, M_0 current source of 0.5mA
 
 * Power Supply
-VDD VDD 0 DC 2.0
+VDD VDD 0 DC 1.2
 
 * Bias Voltage
-Vb Vb 0 DC 0.9
+Vb Vb 0 DC 0.5
 
 * Differential Input Voltages
-Vin1 Vin1 0 DC 0
-Vin2 Vin2 0 DC 0
+Vin1 Vin1 0 DC 0.795
+Vin2 Vin2 0 DC 0.795
 
 * Current Source
-M0 0 Vb 0 0 sky130_fd_pr__nfet_01v8 W=10u L=1u
+M0 0 Vb 0 0 sky130_fd_pr__nfet_01v8 W=49.56u L=500n
 
 * Differential Pair
-M1 out1 Vin1 0 0 sky130_fd_pr__nfet_01v8 W=10u L=1u
-M2 out2 Vin2 0 0 sky130_fd_pr__nfet_01v8 W=10u L=1u
+M1 out1 Vin1 0 0 sky130_fd_pr__nfet_01v8 W=30u L=500n
+M2 out2 Vin2 0 0 sky130_fd_pr__nfet_01v8 W=30u L=500n
 
 * Load Resistors
-RD1 VDD out1 2.5k
-RD2 VDD out2 2.5k
+RD1 VDD out1 1989.43
+RD2 VDD out2 1989.43
 
 * Output Capacitance
 Cout out1 out2 2p
@@ -31,7 +31,7 @@ Cout out1 out2 2p
 * Analysis
 .control
     * Initial condition
-    .ic V(Vin1)=0
+    .ic V(Vin1)=0.795 V(Vin2)=0.795
 
     * DC operating point analysis
     op
@@ -42,6 +42,9 @@ Cout out1 out2 2p
     * Sweep input voltage and plot drain currents
     sweep Vin1 -200m 200m 1m
     plot I(M1) I(M2)
+
+    * Save .raw file
+    wrdata d.raw all
 .endc
 
 .end
