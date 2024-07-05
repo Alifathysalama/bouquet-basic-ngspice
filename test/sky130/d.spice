@@ -47,4 +47,7 @@ Cout out1 out2 2p
     wrdata d.raw all
 .endc
 
+.lib /opt/pdks/sky130A/libs.tech/combined/sky130.lib.spice tt
+.include /opt/pdks/sky130A/libs.ref/sky130_fd_sc_hd/spice/sky130_fd_sc_hd.spice
+
 .end
