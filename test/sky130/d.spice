@@ -1,4 +1,4 @@
-** Simple NPN Transistor Amplifier
+* Simple NPN Transistor Amplifier
 
 .option TEMP=75
 .option warn=1
@@ -14,15 +14,6 @@ Q1 C B E 0 npn
 RB B Vbb 10k
 RC Vcc C 1k
 RE E 0 500
-
-* Load capacitance
-CL C 0 10p
-
-* Define input voltage
-Vin IN 0 SIN(0 1m 1k)
-
-* Coupling capacitor
-Cin IN B 10u
 
 * Simulation commands
 .control
