@@ -35,8 +35,8 @@ test-basic:
 
 test-sky130:
 	PDK=sky130A make TOP=sky130/d.spice sim
+	write $(RAW_FILE)
 	
-
 test-ihp:
 	PDK=sg13g2  make TOP=ihp/psrr_1.spice sim
 	grep "psrr                =  -6.152994e+0" psrr_1.log
