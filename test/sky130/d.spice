@@ -1,15 +1,28 @@
-* Simple Voltage Divider Example
+* Differential Amplifier Example
 
-V1 in 0 1
-R1 in out 1k
-R2 out 0 2k
+.option TEMP=75
+.option warn=1
 
-.save all
-.op
+**.subckt transient
+vvss vss GND DC 0
+vvdd vdd GND DC 2.0
+X1 SENS_IN N1 N2 vdd vss net1 out OSC
+XR1 out SENS_IN SENS_IN sky130_fd_pr__res_high_po_5p73 L=8 mult=1 m=1
+XPG SENS_IN vdd net1 vdd vss PASSGATE
+
+.ic v(SENS_IN)=0
 
 .control
+tran 0.1n 11u 10u
 save all
 write $(RAW_FILE)
 .endc
 
+.lib /opt/pdks/sky130A/libs.tech/combined/sky130.lib.spice tt
+.include /opt/pdks/sky130A/libs.ref/sky130_fd_sc_hd/spice/sky130_fd_sc_hd.spice
+**.ends
+
+*expanding symbols omitted for brevity*
+
+.GLOBAL GND
 .end
