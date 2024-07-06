@@ -19,7 +19,6 @@ RE E 0 500
 .control
 tran 0.1us 10ms
 save all
-write $(RAW_FILE)
 .endc
 
 * Include standard NPN transistor model
