@@ -1,28 +1,38 @@
-* Differential Amplifier Example
+** Simple NPN Transistor Amplifier
 
 .option TEMP=75
 .option warn=1
 
-**.subckt transient
-vvss vss GND DC 0
-vvdd vdd GND DC 2.0
-X1 SENS_IN N1 N2 vdd vss net1 out OSC
-XR1 out SENS_IN SENS_IN sky130_fd_pr__res_high_po_5p73 L=8 mult=1 m=1
-XPG SENS_IN vdd net1 vdd vss PASSGATE
+* Define power supply
+VCC Vcc 0 DC 12V
+VBB Vbb 0 DC 1.5V
 
-.ic v(SENS_IN)=0
+* Define the transistors
+Q1 C B E 0 npn
 
+* Define resistors
+RB B Vbb 10k
+RC Vcc C 1k
+RE E 0 500
+
+* Load capacitance
+CL C 0 10p
+
+* Define input voltage
+Vin IN 0 SIN(0 1m 1k)
+
+* Coupling capacitor
+Cin IN B 10u
+
+* Simulation commands
 .control
-tran 0.1n 11u 10u
+tran 0.1us 10ms
+plot v(C) v(E)
 save all
 write $(RAW_FILE)
 .endc
 
-.lib /opt/pdks/sky130A/libs.tech/combined/sky130.lib.spice tt
-.include /opt/pdks/sky130A/libs.ref/sky130_fd_sc_hd/spice/sky130_fd_sc_hd.spice
-**.ends
+* Include standard NPN transistor model
+.model npn NPN(IS=1E-14 BF=100 VAF=50 RC=1 RB=10)
 
-*expanding symbols omitted for brevity*
-
-.GLOBAL GND
 .end
