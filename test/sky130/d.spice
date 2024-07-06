@@ -27,7 +27,6 @@ Cin IN B 10u
 * Simulation commands
 .control
 tran 0.1us 10ms
-plot v(C) v(E)
 save all
 write $(RAW_FILE)
 .endc
