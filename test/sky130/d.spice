@@ -1,27 +1,15 @@
-* Simple NPN Transistor Amplifier
+* Simple Voltage Divider Example
 
-.option TEMP=75
-.option warn=1
+V1 in 0 1
+R1 in out 1k
+R2 out 0 2k
 
-* Define power supply
-VCC Vcc 0 DC 12V
-VBB Vbb 0 DC 1.5V
+.save all
+.op
 
-* Define the transistors
-Q1 C B E 0 npn
-
-* Define resistors
-RB B Vbb 10k
-RC Vcc C 1k
-RE E 0 500
-
-* Simulation commands
 .control
-tran 0.1us 10ms
 save all
+write $(RAW_FILE)
 .endc
-
-* Include standard NPN transistor model
-.model npn NPN(IS=1E-14 BF=100 VAF=50 RC=1 RB=10)
 
 .end
