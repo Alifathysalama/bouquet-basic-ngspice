@@ -34,7 +34,7 @@ test-basic:
 	make TOP=basic/basic.spice test-env-py
 
 test-sky130:
-	PDK=sky130A make TOP=sky130/d.spice sim
+	PDK=sky130A make TOP=sky130/nmos.spice sim
 
 test-ihp:
 	PDK=sg13g2  make TOP=ihp/psrr_1.spice sim
