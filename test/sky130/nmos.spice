@@ -1,0 +1,43 @@
+* NMOS Device Characterization
+.include 'sky130_fd_pr/models/sky130.lib.spice'  * Include the Sky130 model file
+
+* NMOS transistor
+M1 D G S S sky130_fd_pr__nfet_01v8 L=0.5u W=5u
+
+* Voltage sources
+VGS G S DC 0
+VDS D S DC 0.3
+
+* DC sweep Vgs
+.control
+  set filetype=ascii
+  tran 1n 1u
+  dc VGS 0 1.2 0.01
+  plot I(M1) vs V(G)
+  wrdata ids_vs_vgs.txt V(G) I(M1)
+.endc
+
+* DC sweep Vds
+.control
+  set filetype=ascii
+  tran 1n 1u
+  dc VDS 0 1.2 0.01
+  plot I(M1) vs V(D)
+  wrdata ids_vs_vds.txt V(D) I(M1)
+.endc
+
+* Scaling width for 0.5mA current source
+* New width calculation
+* Assuming linear scaling, W_new = W_old * (I_target / I_old)
+* W_new = 5u * (0.5m / I(M1 @ Vgs=0.5, Vds=0.3))
+
+* Updated transistor
+M2 D G S S sky130_fd_pr__nfet_01v8 L=0.5u W=new_width  * Calculate new_width based on the above equation
+
+* DC operating point for new width
+.control
+  op
+  print all
+.endc
+
+.end
