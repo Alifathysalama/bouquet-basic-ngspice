@@ -1,5 +1,5 @@
 * Device Characterization
-.include "/opt/pdks/sg13g2/libs.tech/ngspice/models/cornerMOSlv.lib" mos_tt
+.include "/opt/pdks/sg13g2/libs.tech/ngspice/models/cornerMOSlv.lib"
 
 * Supply and Biasing
 VDD Vdd 0 1.2
