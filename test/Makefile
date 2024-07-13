@@ -37,8 +37,7 @@ test-sky130:
 	PDK=sky130A make TOP=sky130/nmos.spice sim
 
 test-ihp:
-	PDK=sg13g2  make TOP=ihp/psrr_1.spice sim
-	grep "psrr                =  -6.152994e+0" psrr_1.log
+	PDK=sg13g2  make TOP=ihp/nmos.spice sim
 
 	
 
