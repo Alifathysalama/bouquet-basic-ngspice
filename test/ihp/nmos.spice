@@ -1,5 +1,8 @@
 * Device Characterization
-.include "/opt/pdks/sg13g2/libs.tech/ngspice/models/cornerMOSlv.lib"
+.lib /opt/pdks/sg13g2/libs.tech/ngspice/models/cornerMOSlv.lib mos_tt
+
+* Include specific model file
+.include /opt/pdks/sg13g2/libs.tech/ngspice/models/sg13g2_moslv_mod.lib
 
 * Supply and Biasing
 VDD Vdd 0 1.2
@@ -7,7 +10,7 @@ VGS Gate 0 DC 0.5
 VDS Drain 0 DC 0.3
 
 * NMOS Transistor
-M1 Drain Gate 0 0 NMOS L=500n W=30u
+M1 Drain Gate 0 0 sg13_lv_nmos L=500n W=30u
 
 * DC Sweep VGS
 .DC VGS 0 1.2 0.01
