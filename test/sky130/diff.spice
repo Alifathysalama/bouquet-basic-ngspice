@@ -1,6 +1,6 @@
 * Include the SkyWater PDK library
-.lib /opt/pdks/sky130A/libs.tech/combined/sky130.lib.spice tt
-.include /opt/pdks/sky130A/libs.ref/sky130_fd_sc_hd/spice/sky130_fd_sc_hd.spice
+.lib /opt/pdks/sky130A/libs.tech/ngspice/sky130.lib.spice tt
+.include /opt/pdks/sky130A/libs.ref/sky130_fd_pr/spice/sky130_fd_pr.spice
 
 * Part I: Device Characterization
 
@@ -9,7 +9,7 @@ M1 D G S S sky130_fd_pr__nfet_01v8 L=0.5u W=30u
 VDS D 0 DC 0.3
 VGS G 0
 .dc VGS 0 1.2 0.01
-.print dc I(VDS)
+.print dc I(V(VD))
 .end
 
 * Ids vs Vds
@@ -17,7 +17,7 @@ M2 D G S S sky130_fd_pr__nfet_01v8 L=0.5u W=30u
 VDS D 0
 VGS G 0 DC 0.5
 .dc VDS 0 1.2 0.01
-.print dc I(VDS)
+.print dc I(V(VD))
 .end
 
 * Current Source Design
@@ -25,7 +25,7 @@ M3 D G S S sky130_fd_pr__nfet_01v8 L=0.5u W=49.56u
 VDS D 0 DC 0.3
 VGS G 0 DC 0.5
 .op
-.print op I(VDS) V(G) V(D) V(S) gm gds
+.print op I(V(VD)) V(G) V(D) V(S) gm gds
 .end
 
 * Part II: Differential Amplifier Design
