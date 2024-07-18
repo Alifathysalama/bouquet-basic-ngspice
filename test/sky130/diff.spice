@@ -1,65 +1,25 @@
-* Include the SkyWater PDK library
-.lib /opt/pdks/sky130A/libs.tech/ngspice/sky130.lib.spice tt
-.include /opt/pdks/sky130A/libs.ref/sky130_fd_pr/spice/sky130_fd_pr.spice
+* Simple NMOS Transistor Characterization
 
-* Part I: Device Characterization
+* Include the IHP PDK MOS library
+.include /opt/pdks/sg13g2/libs.tech/ngspice/models/sg13g2_moslv_mod.lib
 
-* Ids vs Vgs
-M1 D G S S sky130_fd_pr__nfet_01v8 L=0.5u W=30u
-VDS D 0 DC 0.3
-VGS G 0
-.dc VGS 0 1.2 0.01
-.print dc I(V(VD))
-.end
+* NMOS Transistor
+M1 D G S B sg13g2_lv_nmos_psp L=0.18u W=1u
 
-* Ids vs Vds
-M2 D G S S sky130_fd_pr__nfet_01v8 L=0.5u W=30u
-VDS D 0
-VGS G 0 DC 0.5
-.dc VDS 0 1.2 0.01
-.print dc I(V(VD))
-.end
+* Voltage Sources
+VDS D 0 1.8V
+VGS G 0 DC 0.9V
+VBS B 0 0V
 
-* Current Source Design
-M3 D G S S sky130_fd_pr__nfet_01v8 L=0.5u W=49.56u
-VDS D 0 DC 0.3
-VGS G 0 DC 0.5
-.op
-.print op I(V(VD)) V(G) V(D) V(S) gm gds
-.end
+* DC Sweep for Id vs Vgs
+.dc VGS 0 1.8 0.01
+.print dc I(VDS)
 
-* Part II: Differential Amplifier Design
+* Save all results to a .raw file
+.control
+run
+wrdata output.raw all
+quit
+.endc
 
-* Differential Amplifier Design using current source from Part I
-M0 D0 G0 S0 S0 sky130_fd_pr__nfet_01v8 L=0.5u W=49.56u
-M1 D1 G1 S1 S1 sky130_fd_pr__nfet_01v8 L=0.5u W=30u
-M2 D2 G2 S2 S2 sky130_fd_pr__nfet_01v8 L=0.5u W=30u
-
-* Biasing
-VDD VDD 0 DC 1.2
-I0 S0 0 DC 0.5m
-
-* DC Analysis
-VGS G0 0 DC 0.5
-VDS D0 0 DC 0.3
-.dc Vin -0.09 0.09 0.01
-.print dc V(D0) V(D1) V(D2)
-
-* AC Analysis
-.ac dec 10 1k 1G
-.print ac V(D0) V(D1) V(D2)
-
-* Transient Analysis
-Vinput In 0 sin(0 10mV 1MHz)
-.tran 0.1ns 1us
-.print tran V(D0) V(D1) V(D2)
-
-* Load Capacitance
-Cload D1 0 2pF
-Cload D2 0 2pF
-
-* Differential Sweep
-Vin G1 0 DC 0.795
-.dc Vin -0.09 0.09 0.01
-.print dc I(V(D1)) I(V(D2))
 .end
