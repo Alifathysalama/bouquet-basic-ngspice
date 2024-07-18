@@ -4,7 +4,7 @@
 .include /opt/pdks/sg13g2/libs.tech/ngspice/models/sg13g2_moslv_mod.lib
 
 * NMOS Transistor
-M1 D G S B sg13g2_lv_nmos_psp L=0.18u W=1u
+XM1 D G S B sg13g2_lv_nmos_psp L=0.18u W=1u
 
 * Voltage Sources
 VDS D 0 1.8V
